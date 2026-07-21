@@ -1,9 +1,99 @@
 <html>
-    <header>
-        <title>Construction Math Practice</title>
-    </header>
-    <body>
-        <h1>Construction Math Practice</h1>
-        <p>A site to practice construction math.</p>
-    </body>
+  <header>
+    <title>Construction Math Practice</title>
+    <script>
+      function randMeasure() {
+        return Math.floor(Math.random() * 240) + 121;
+      }
+      function randSide() {
+        if (Math.random() >= 0.5) {
+          return "Exterior";
+        } else {
+          return "Interior";
+        }
+      }
+
+      function toFeet(inches) {
+        var feet = Math.floor(inches / 12);
+        var remainder = inches % 12;
+        var text = feet + "' - " + remainder + "\"";
+
+        return text;
+      }
+
+      function randMat() {
+        if (Math.random() >= 0.5) {
+          return "2x6";
+        } else {
+          return "2x4";
+        }
+      }
+      function invertSide(currentSide){
+        if (currentSide == "Interior") {
+          return "Exterior";
+        } else {
+          return "Interior";
+        }
+      }
+
+      function generateProblem() {
+        var xDimension = randMeasure();
+        var yDimension = randMeasure();
+        var dimensionSide = randSide();
+        var invertedSide = invertSide(dimensionSide);
+        var materialType = randMat();
+        const sideSpans = document.getElementsByClassName("side");
+
+        document.getElementById("xD").innerHTML = toFeet(xDimension);
+        document.getElementById("yD").innerHTML = toFeet(yDimension);
+        document.getElementById("opposite").innerHTML = invertedSide;
+        document.getElementById("material").innerHTML = materialType;
+        for (var i = 0; i < sideSpans.length; ++i) {
+          sideSpans[i].innerHTML = dimensionSide;
+        }
+      }
+    </script>
+  </header>
+  <body>
+    <h1>Construction Math Practice</h1>
+    <p>
+      Given the following information, answer the questions below the diagram.
+    </p>
+    <button onclick="generateProblem()">New Problem</button>
+    <ul>
+      <li>
+        <strong><span class="side">Interior</span> Width: </strong
+        ><span id="xD">4'</span>
+      </li>
+      <li>
+        <strong><span class="side">Interior</span> Height: </strong
+        ><span id="yD">3'</span>
+      </li>
+      <li><strong>Material: </strong><span id="material">2x4</span></li>
+    </ul>
+    <img src="img/top-plate.svg" />
+    <ol>
+      <li>
+        What are the <span id="opposite">Exterior</span> dimensions?
+      </li>
+      <li>
+        What are the dimensions of all the plates?
+      </li>
+      <li>
+        How many studs are required for each of the plates
+      </li>
+      <li>
+        How many studs are required total?
+      </li>
+      <li>
+        What is the length of the diagonal from one <span class="side">Interior</span> corner to the other?
+      </li>
+      <li>
+        Estimate the total ceiling area of this room.
+      </li>
+      <li>
+        How many sheets of drywall are needed to cover all the walls?
+      </li>
+    </ol>
+  </body>
 </html>

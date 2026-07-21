@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg
+   viewBox="0 0 4 3"
+   preserveAspectRatio="xMidYMid meet"
+   width="800"
+   height="600"
+   version="1.1"
+   id="long-side"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="long-side" />
+     <rect
+       style="fill:#FFFFFF;fill-opacity:1;stroke:none;"
+       id="background"
+       width="4"
+       height="3"
+       x="0"
+       y="0" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.02;stroke-opacity:1"
+       id="top-plate"
+       width="3.48"
+       height="0.25"
+       x="0.26"
+       y="0.01" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.02;stroke-opacity:1"
+       id="bottom-plate"
+       width="3.48"
+       height="0.25"
+       x="0.26"
+       y="2.74" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.02;stroke-opacity:1"
+       id="left-plate"
+       width="0.25"
+       height="2.98"
+       x="0.01"
+       y="0.01" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.02;stroke-opacity:1"
+       id="right-plate"
+       width="0.25"
+       height="2.98"
+       x="3.74"
+       y="0.01" />
+</svg>
