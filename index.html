@@ -1,6 +1,23 @@
 <html>
   <header>
     <title>Construction Math Practice</title>
+    <style>
+      body:has(:not(#answer:checked)) .answer {
+        visibility: hidden;
+      }
+      body:has(#answer:checked) .answer {
+        visibility: visible;
+      }
+      label, button {
+        border: 1px #8f8f9d solid;
+        border-radius: 4px;
+        background-color: #e9e9ed;
+        padding: 1px 4px;
+        &:hover {
+          background-color: #d0d0d7;
+        }
+      }
+    </style>
     <script>
       function randMeasure() {
         return Math.floor(Math.random() * 240) + 121;
@@ -13,10 +30,20 @@
         }
       }
 
+      function randHeight() {
+        return Math.floor(Math.random() * 48) + 73;
+      }
+
       function toFeet(inches) {
         var feet = Math.floor(inches / 12);
-        var remainder = inches % 12;
-        var text = feet + "' - " + remainder + "\"";
+        var remainder = Math.floor(inches) % 12;
+        var fraction = Math.round((inches - Math.floor(inches)) * 16);
+        if (fraction > 0) {
+          fraction = " " + fraction + "/16";
+        } else {
+          fraction = "";
+        }
+        var text = feet + "' - " + remainder + fraction + "\"";
 
         return text;
       }
@@ -36,21 +63,107 @@
         }
       }
 
+      function solveProblem(xDimension, yDimension, dimensionSide, materialType, zDimension){
+        var answerList = [0,0,0,0,0,0,0];
+        var width = 7;
+        if (materialType == "2x6") {
+          width = 11;
+        }
+        var xOpposite = 0;
+        var yOpposite = 0;
+        if (dimensionSide == "Interior") {
+          xOpposite = xDimension + width;
+          yOpposite = yDimension + width;
+        } else {
+          xOpposite = xDimension - width;
+          yOpposite = yDimension - width;
+        }
+        answerList[0] = "Width: " + toFeet(xOpposite) + ", Height: " + toFeet(yOpposite);
+
+        var xPlate = 0;
+        var yPlate = 0;
+        if (dimensionSide == "Interior") {
+          xPlate = xOpposite;
+          yPlate = yDimension;
+        } else {
+          xPlate = xDimension;
+          yPlate = yOpposite;
+        }
+        answerList[1] = "Horizontal Plates: " + toFeet(xPlate) + " each, Vertical Plates: " + toFeet(yPlate) + " each";
+
+        var xStuds = Math.floor(xPlate / 16) + 1;
+        if (xPlate % 16 > 0) {
+          xStuds += 1;
+        }
+        var yStuds = Math.floor(yPlate / 16) + 1;
+        if (yPlate % 16 > 0) {
+          yStuds += 1;
+        }
+        answerList[2] = "Horizontal Plates: " + xStuds + " studs each, Vertical Plates: " + yStuds + " studs each";
+
+        answerList[3] = (xStuds + yStuds)*2 + 8;
+
+        diagonal = xDimension * xDimension + yDimension * yDimension;
+        diagonal = Math.sqrt(diagonal);
+        answerList[4] = toFeet(diagonal)
+
+        var ceilingArea = 0;
+        var wallArea = 0;
+        var zDec = zDimension / 12;
+        zDec = parseFloat(zDec.toFixed(2))
+        if (dimensionSide = "Interior") {
+          xDec = xDimension / 12;
+          xDec = parseFloat(xDec.toFixed(2));
+          yDec = yDimension / 12;
+          yDec = parseFloat(yDec.toFixed(2));
+
+          var perimeter = (xDimension + yDimension) * 2;
+          perimeter = perimeter / 12;
+          perimeter = parseFloat(perimeter.toFixed(2));
+          wallArea = perimeter * zDec;
+        } else {
+          xDec = xOpposite / 12;
+          xDec = parseFloat(xDec.toFixed(2));
+          yDec = yOpposite / 12;
+          yDec = parseFloat(yDec.toFixed(2));
+
+          var perimeter = (xOpposite + yOpposite) * 2;
+          perimeter = perimeter / 12;
+          perimeter = parseFloat(perimeter.toFixed(2));
+          wallArea = perimeter * zDec;
+        }
+        ceilingArea = xDec * yDec;
+        answerList[5] = ceilingArea.toFixed(2) + " sqft";
+        answerList[6] = Math.ceil(wallArea / 32) + " sheets of drywall";
+
+
+
+        return answerList;
+      }
+
       function generateProblem() {
         var xDimension = randMeasure();
         var yDimension = randMeasure();
         var dimensionSide = randSide();
         var invertedSide = invertSide(dimensionSide);
+        var zDimension = randHeight();
         var materialType = randMat();
         const sideSpans = document.getElementsByClassName("side");
+        const answerSpans = document.getElementsByClassName("answer");
+        const answerList = solveProblem(xDimension, yDimension, dimensionSide, materialType, zDimension);
 
         document.getElementById("xD").innerHTML = toFeet(xDimension);
         document.getElementById("yD").innerHTML = toFeet(yDimension);
         document.getElementById("opposite").innerHTML = invertedSide;
         document.getElementById("material").innerHTML = materialType;
+        document.getElementById("zD").innerHTML = toFeet(zDimension);
         for (var i = 0; i < sideSpans.length; ++i) {
           sideSpans[i].innerHTML = dimensionSide;
         }
+        for (var i = 0; i <answerSpans.length; ++i) {
+          answerSpans[i].innerHTML = answerList[i];
+        }
+        document.getElementById("answer").checked = false;
       }
     </script>
   </header>
@@ -70,30 +183,34 @@
         ><span id="yD">3'</span>
       </li>
       <li><strong>Material: </strong><span id="material">2x4</span></li>
+      <li>
+        <strong>Wall Height: </strong><span id="zD">8'</span>
+      </li>
     </ul>
     <img src="img/top-plate.svg" />
     <ol>
       <li>
-        What are the <span id="opposite">Exterior</span> dimensions?
+        What are the <span id="opposite">Exterior</span> dimensions? <span class="answer">Answer</span>
       </li>
       <li>
-        What are the dimensions of all the plates?
+        What are the dimensions of all the plates? <span class="answer">Answer</span>
       </li>
       <li>
-        How many studs are required for each of the plates
+        How many studs are required for each of the plates? <span class="answer">Answer</span>
       </li>
       <li>
-        How many studs are required total?
+        How many studs are required total? <span class="answer">Answer</span>
       </li>
       <li>
-        What is the length of the diagonal from one <span class="side">Interior</span> corner to the other?
+        What is the length of the diagonal from one <span class="side">Interior</span> corner to the other? <span class="answer">Answer</span>
       </li>
       <li>
-        Estimate the total ceiling area of this room.
+        Estimate the total ceiling area of this room. <span class="answer">Answer</span>
       </li>
       <li>
-        How many sheets of drywall are needed to cover all the walls?
+        How many sheets of drywall are needed to cover all the walls? <span class="answer">Answer</span>
       </li>
     </ol>
+    <label><input type="checkbox" name="check-answer" id="answer" />Show Answers</label>
   </body>
 </html>
